@@ -33,7 +33,8 @@ public class AttackSkill : MonoBehaviour
         if (currentCooldown > 0)
         {
             currentCooldown -= Time.deltaTime;
-            OnCooldownUpdate(currentCooldown);
+            if (OnCooldownUpdate != null)
+                OnCooldownUpdate(currentCooldown);
         }
     }
 
@@ -44,6 +45,7 @@ public class AttackSkill : MonoBehaviour
 
     public void UseSkill()
     {
+        Debug.Log($"{user} uses skill {gameObject}");
         if (IsUsable())
         {
             user.Target.TakeDamage(damage);
