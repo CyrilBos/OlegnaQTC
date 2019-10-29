@@ -40,7 +40,6 @@ public class Character : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        Debug.Log(gameObject);
         currentHp -= amount;
         if (currentHp < 0)
         {

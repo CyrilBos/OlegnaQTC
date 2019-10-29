@@ -39,7 +39,7 @@ public class AttackSkill : MonoBehaviour
 
     public bool IsUsable()
     {
-        return currentCooldown <= 0 && user.CurrentResource > resourceCost;
+        return currentCooldown <= 0 && user.CurrentResource > resourceCost && !user.IsDead() && !user.Target.IsDead();
     }
 
     public void UseSkill()

@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
             if (skillToUse != null)
             {
                 Debug.Log($"{gameObject} uses {skillToUse}");
-                skillToUse.UseSkill();
+                // skillToUse.UseSkill();
                 globalCooldown = GlobalCooldownDuration;
             }
         }

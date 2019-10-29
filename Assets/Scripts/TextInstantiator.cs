@@ -27,8 +27,6 @@ public class TextInstantiator : MonoBehaviour
     public void CreateDamageText(int damage, Vector3 position)
     {
         GameObject damageText = Instantiate(damageTextPrefab, mainCamera.WorldToScreenPoint(position), Quaternion.identity);
-        Text text = damageText.GetComponent<Text>();
-        text.text = damage.ToString();
 
         Vector2 screenPosition = mainCamera.WorldToScreenPoint((Vector2)position);
         screenPosition.x += Random.Range(-50, +50);
@@ -36,5 +34,9 @@ public class TextInstantiator : MonoBehaviour
 
         damageText.transform.SetParent(canvas.transform, false);
         damageText.transform.position = screenPosition;
+
+        Text text = damageText.GetComponentInChildren<Text>();
+        text.text = damage.ToString();
+        // damageText.transform.position = screenPosition;
     }
 }
