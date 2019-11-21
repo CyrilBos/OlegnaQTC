@@ -14,17 +14,21 @@ public class Character : MonoBehaviour
 
     private int currentHp, currentResource;
 
-    private Character target;
+    private List<PeriodicEffect> effects = new List<PeriodicEffect>();
+
     public static Action<int, Vector3> OnDamageTaken;
     public Action<float> OnDeath;
     public Action<int, int> OnHealthUpdated;
 
     public int CurrentResource { get => currentResource; }
-    public Character Target { get => target; set => target = value; }
+    public Character Target { get; set; }
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+
+        currentHp = maxHp;
+        currentResource = maxResource;
     }
 
     private void OnMouseUp()
@@ -32,10 +36,22 @@ public class Character : MonoBehaviour
         Player.Target = this;
     }
 
-    public Character()
+    private void Update()
     {
-        currentHp = maxHp;
-        currentResource = maxResource;
+        float deltaTime = Time.deltaTime;
+        foreach (PeriodicEffect effect in effects)
+        {
+            Debug.Log(effect.Duration);
+            effect.UpdateTimer(deltaTime, this);
+        }
+
+        effects.RemoveAll(effect => effect.Duration <= 0);
+    }
+
+    public void GetHit(int damage)
+    {
+        TakeDamage(damage);
+        PlayHurtAnimation();
     }
 
     public void TakeDamage(int amount)
@@ -49,7 +65,6 @@ public class Character : MonoBehaviour
         }
         OnDamageTaken(amount, transform.position);
         OnHealthUpdated(currentHp, maxHp);
-        PlayHurtAnimation();
     }
     public void SpendResource(int amount)
     {
@@ -62,6 +77,11 @@ public class Character : MonoBehaviour
     public bool IsDead()
     {
         return currentHp <= 0;
+    }
+
+    public void AddStatusEffect(PeriodicEffect statusEffect)
+    {
+        effects.Add(statusEffect);
     }
 
     public void PlayAttackAnimation()

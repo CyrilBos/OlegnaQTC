@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class CooldownUI : MonoBehaviour
 {
-    [SerializeField]
-    private AttackSkill skill;
+    private CooldownSkill skill;
 
     private Text text;
     private Button button;
 
     private void Awake()
     {
+        skill = GetComponent<CooldownSkill>();
         button = GetComponentInChildren<Button>();
         text = transform.Find("CooldownText").GetComponent<Text>();
         skill.OnCooldownUpdate += UpdateCooldownText;
