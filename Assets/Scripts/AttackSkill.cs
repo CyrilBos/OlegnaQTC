@@ -8,8 +8,6 @@ public class AttackSkill : CooldownSkill
     [SerializeField]
     private int damage = 10;
 
-
-
     protected override void SkillEffect()
     {
         Debug.Log($"{user} uses skill {gameObject}");

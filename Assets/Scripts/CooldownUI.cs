@@ -14,6 +14,7 @@ public class CooldownUI : MonoBehaviour
     {
         skill = GetComponent<CooldownSkill>();
         button = GetComponentInChildren<Button>();
+
         text = transform.Find("CooldownText").GetComponent<Text>();
         skill.OnCooldownUpdate += UpdateCooldownText;
     }

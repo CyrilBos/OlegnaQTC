@@ -7,28 +7,37 @@ public class Character : MonoBehaviour
 {
     private static float DeathDelay = 1f;
 
+    private float globalCooldown = 1f;
+    private static float GlobalCooldownDuration = 1f;
+
     [SerializeField]
-    private int maxHp = 100, maxResource = 50;
+    private int maxHealth = 100, maxResource = 50;
 
     private Animator animator;
 
-    private int currentHp, currentResource;
-
     private List<PeriodicEffect> effects = new List<PeriodicEffect>();
 
-    public static Action<int, Vector3> OnDamageTaken;
-    public Action<float> OnDeath;
-    public Action<int, int> OnHealthUpdated;
-
-    public int CurrentResource { get => currentResource; }
     public Character Target { get; set; }
+
+    public bool IsInGlobalCooldown()
+    {
+        return globalCooldown > 0;
+    }
+
+    public int CurrentResource { get; set; }
+    public int CurrentHealth { get; set; }
+    public int MaxHealth { get => maxHealth; set => maxHealth = value; }
+
+    public static Action<int, Vector3> OnDamageTaken;
+    public Action<Character, float> OnDeath;
+    public Action<int, int> OnHealthUpdated;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
 
-        currentHp = maxHp;
-        currentResource = maxResource;
+        CurrentHealth = maxHealth;
+        CurrentResource = maxResource;
     }
 
     private void OnMouseUp()
@@ -39,6 +48,12 @@ public class Character : MonoBehaviour
     private void Update()
     {
         float deltaTime = Time.deltaTime;
+
+        if (IsInGlobalCooldown())
+        {
+            globalCooldown -= deltaTime;
+        }
+
         foreach (PeriodicEffect effect in effects)
         {
             Debug.Log(effect.Duration);
@@ -46,6 +61,12 @@ public class Character : MonoBehaviour
         }
 
         effects.RemoveAll(effect => effect.Duration <= 0);
+    }
+
+    public void InitStats(int health, int resource)
+    {
+        CurrentHealth = maxHealth = health;
+        CurrentResource = maxResource = resource;
     }
 
     public void GetHit(int damage)
@@ -56,27 +77,33 @@ public class Character : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        currentHp -= amount;
-        if (currentHp < 0)
+        CurrentHealth -= amount;
+        if (CurrentHealth < 0)
         {
-            currentHp = 0;
+            CurrentHealth = 0;
             animator.SetBool("Dead", true);
-            OnDeath(animator.GetCurrentAnimatorStateInfo(0).length + Character.DeathDelay);
+            OnDeath(this, animator.GetCurrentAnimatorStateInfo(0).length + Character.DeathDelay);
         }
         OnDamageTaken(amount, transform.position);
-        OnHealthUpdated(currentHp, maxHp);
+        OnHealthUpdated(CurrentHealth, maxHealth);
     }
+
+    public void TriggerGlobalCooldown()
+    {
+        globalCooldown = GlobalCooldownDuration;
+    }
+
     public void SpendResource(int amount)
     {
-        if (currentResource > amount)
+        if (CurrentResource > amount)
         {
-            currentResource -= amount;
+            CurrentResource -= amount;
         }
     }
 
     public bool IsDead()
     {
-        return currentHp <= 0;
+        return CurrentHealth <= 0;
     }
 
     public void AddStatusEffect(PeriodicEffect statusEffect)

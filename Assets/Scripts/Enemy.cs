@@ -7,40 +7,30 @@ public class Enemy : MonoBehaviour
 {
     public AttackSkill[] attacks;
 
-    private Character character;
-
-    private float globalCooldown = 1f;
-    private static float GlobalCooldownDuration = 1f;
+    public Character Character { get; set; }
 
     private void Awake()
     {
-        character = GetComponent<Character>();
-        character.Target = GameObject.Find("Player").GetComponent<Character>();
-        character.OnDeath += Die;
+        Character = GetComponent<Character>();
+        Character.Target = GameObject.Find("Player").GetComponent<Character>();
+        Character.OnDeath += Die;
     }
 
     private void OnDisable()
     {
-        Player.EnemyDied(character);
-        character.OnDeath -= Die;
+        Character.OnDeath -= Die;
     }
 
     private void Update()
     {
-        if (Player.IsDead() || character.IsDead())
+        if (Player.IsDead() || Character.IsDead())
             return;
 
-        if (globalCooldown > 0)
-        {
-            globalCooldown -= Time.deltaTime;
-        }
-        else
-        {
+        if (!Character.IsInGlobalCooldown()) { 
             AttackSkill skillToUse = ChooseSkill();
             if (skillToUse != null)
             {
                 skillToUse.UseSkill();
-                globalCooldown = GlobalCooldownDuration;
             }
         }
     }
@@ -57,7 +47,7 @@ public class Enemy : MonoBehaviour
         return null;
     }
 
-    private void Die(float deathAnimationLength)
+    private void Die(Character _, float deathAnimationLength)
     {
         Destroy(gameObject, deathAnimationLength);
     }

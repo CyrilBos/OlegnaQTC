@@ -30,7 +30,7 @@ public abstract class CooldownSkill : MonoBehaviour
 
     public bool IsUsable()
     {
-        return currentCooldown <= 0 && user.CurrentResource > resourceCost && !user.IsDead() && !user.Target.IsDead();
+        return currentCooldown <= 0 && user.CurrentResource > resourceCost && !user.IsDead() && !user.Target.IsDead() && !user.IsInGlobalCooldown();
     }
 
     public void UseSkill()
@@ -39,6 +39,7 @@ public abstract class CooldownSkill : MonoBehaviour
         {
             SkillEffect();
             user.SpendResource(resourceCost);
+            user.TriggerGlobalCooldown();
             currentCooldown = cooldown;
         }
     }

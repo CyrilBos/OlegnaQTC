@@ -9,17 +9,23 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private Character character;
     Text healthText;
+
     private void Awake()
     {
         healthText = GetComponentInChildren<Text>();
-        character.OnHealthUpdated += UpdateHealth;
-        character.OnDeath += DestroyHealthBar;
+        // for player that is assigned in editor
+        if (character != null)
+        {
+            character.OnHealthUpdated += UpdateHealth;
+        }
     }
 
-    private void OnDisable()
+    public void SetCharacter(Character character)
     {
-        character.OnHealthUpdated -= UpdateHealth;
-        character.OnDeath -= DestroyHealthBar;
+        character = character;
+        UpdateHealth(character.CurrentHealth, character.MaxHealth);
+        character.OnHealthUpdated += UpdateHealth;
+        character.OnDeath += DestroyHealthBar;
     }
 
     private void UpdateHealth(int currentHealth, int maxHealth)
@@ -27,7 +33,7 @@ public class HealthBar : MonoBehaviour
         healthText.text = $"{currentHealth}/{maxHealth}";
     }
 
-    private void DestroyHealthBar(float deathAnimationLength)
+    private void DestroyHealthBar(Character _, float deathAnimationLength)
     {
         Destroy(gameObject, deathAnimationLength);
     }

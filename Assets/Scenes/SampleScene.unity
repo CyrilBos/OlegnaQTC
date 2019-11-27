@@ -144,6 +144,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyRightHealth
       objectReference: {fileID: 0}
+    - target: {fileID: 2993611705202818146, guid: 2806d1cb7c3c64dedbcb24156ee8ee1a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2993611705202818157, guid: 2806d1cb7c3c64dedbcb24156ee8ee1a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -444,6 +449,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: AoEButton
       objectReference: {fileID: 0}
+    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
+        type: 3}
+      propertyPath: cooldown
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
+        type: 3}
+      propertyPath: damage
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
+        type: 3}
+      propertyPath: user
+      value: 
+      objectReference: {fileID: 1083257672}
     - target: {fileID: 8045968844826742538, guid: 8ccae1549f09c40f685b30ac752785f4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -549,21 +569,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
-        type: 3}
-      propertyPath: cooldown
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
-        type: 3}
-      propertyPath: damage
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
-        type: 3}
-      propertyPath: user
-      value: 
-      objectReference: {fileID: 1083257672}
     - target: {fileID: 8045968844826742539, guid: 8ccae1549f09c40f685b30ac752785f4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -721,16 +726,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: UseSkill
       objectReference: {fileID: 0}
-    - target: {fileID: 8045968844826742543, guid: 8ccae1549f09c40f685b30ac752785f4,
-        type: 3}
-      propertyPath: skill
-      value: 
-      objectReference: {fileID: 82968606}
     - target: {fileID: 8045968842886016127, guid: 8ccae1549f09c40f685b30ac752785f4,
         type: 3}
       propertyPath: m_Text
       value: DoT
       objectReference: {fileID: 0}
+    - target: {fileID: 8045968844826742543, guid: 8ccae1549f09c40f685b30ac752785f4,
+        type: 3}
+      propertyPath: skill
+      value: 
+      objectReference: {fileID: 82968606}
     m_RemovedComponents:
     - {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8ccae1549f09c40f685b30ac752785f4, type: 3}
@@ -796,7 +801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d05cf710fad4a66905780f9bc2b42d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 150
+  maxHealth: 100
   maxResource: 50
 --- !u!212 &1083257673
 SpriteRenderer:
@@ -1012,6 +1017,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageTextPrefab: {fileID: 2248970062831353369, guid: 2ec9311bd51014ad68ec5567fbdd07a0,
     type: 3}
+--- !u!1 &1319491710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1319491712}
+  - component: {fileID: 1319491711}
+  m_Layer: 0
+  m_Name: CombatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1319491711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319491710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e55c9871156b74b40b34774d8b5001bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 1879123424052034013, guid: 3e2df71eed9fb486fbea01ab57a37e99,
+    type: 3}
+  healthBarPrefab: {fileID: 2993611705202818146, guid: 2806d1cb7c3c64dedbcb24156ee8ee1a,
+    type: 3}
+--- !u!4 &1319491712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319491710}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1581336361 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8045968844826742537, guid: 8ccae1549f09c40f685b30ac752785f4,
@@ -1120,6 +1172,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyLeft
       objectReference: {fileID: 0}
+    - target: {fileID: 1879123424052034013, guid: 3e2df71eed9fb486fbea01ab57a37e99,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1879123424052034015, guid: 3e2df71eed9fb486fbea01ab57a37e99,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1193,6 +1250,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyLeftHealth
+      objectReference: {fileID: 0}
+    - target: {fileID: 2993611705202818146, guid: 2806d1cb7c3c64dedbcb24156ee8ee1a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2993611705202818157, guid: 2806d1cb7c3c64dedbcb24156ee8ee1a,
         type: 3}
@@ -1336,6 +1398,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyRight
       objectReference: {fileID: 0}
+    - target: {fileID: 1879123424052034013, guid: 3e2df71eed9fb486fbea01ab57a37e99,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1879123424052034015, guid: 3e2df71eed9fb486fbea01ab57a37e99,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1390,11 +1457,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1879123424052034014, guid: 3e2df71eed9fb486fbea01ab57a37e99,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e2df71eed9fb486fbea01ab57a37e99, type: 3}
@@ -1539,6 +1601,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkillButton
       objectReference: {fileID: 0}
+    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
+        type: 3}
+      propertyPath: user
+      value: 
+      objectReference: {fileID: 1083257672}
     - target: {fileID: 8045968844826742538, guid: 8ccae1549f09c40f685b30ac752785f4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1644,10 +1711,5 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 8045968844826742542, guid: 8ccae1549f09c40f685b30ac752785f4,
-        type: 3}
-      propertyPath: user
-      value: 
-      objectReference: {fileID: 1083257672}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ccae1549f09c40f685b30ac752785f4, type: 3}

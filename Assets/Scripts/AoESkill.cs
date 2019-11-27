@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AoESkill : MonoBehaviour
+public class AoESkill : CooldownSkill
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override void SkillEffect()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

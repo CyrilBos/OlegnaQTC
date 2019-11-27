@@ -11,8 +11,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         character = GetComponent<Character>();
-        target = GameObject.Find("EnemyRight").GetComponent<Character>();
-        character.Target = target;
     }
 
     public static Character Target
@@ -22,11 +20,21 @@ public class Player : MonoBehaviour
         {
             if (target != value)
             {
-                Debug.Log($"new target {value}");
                 target = value;
                 character.Target = target;
-                character.gameObject.transform.Rotate(new Vector3(0, 180, 0));
             }
+        }
+    }
+
+    public void ChangeTarget(Character newTarget, bool isLeft)
+    {
+        Target = newTarget;
+        if (isLeft)
+        {
+            this.transform.eulerAngles = new Vector3(0, 180, 0);
+        } else
+        {
+            this.transform.eulerAngles = new Vector3(0, 0, 0);
         }
     }
 
@@ -35,27 +43,4 @@ public class Player : MonoBehaviour
         return character.IsDead();
     }
 
-    public static void EnemyDied(Character enemy)
-    {
-        if (target == enemy)
-        {
-            GameObject newTarget = GameObject.Find("EnemyLeft");
-            if (target.gameObject == newTarget)
-            {
-                newTarget = GameObject.Find("EnemyRight");
-                if (newTarget != null)
-                {
-                    Target = newTarget.GetComponent<Character>();
-                }
-                else
-                {
-                    Debug.Log("Both enemies dead");
-                }
-            }
-            else if (newTarget != null)
-            {
-                Target = newTarget.GetComponent<Character>();
-            }
-        }
-    }
 }
