@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    private static float DeathDelay = 1f;
-
-    private float globalCooldown = 1f;
-    private static float GlobalCooldownDuration = 1f;
+    private float globalCooldown = 0f;
+    public static float GlobalCooldownDuration = 1f;
 
     [SerializeField]
     private int maxHealth = 100, maxResource = 50;
@@ -17,20 +15,21 @@ public class Character : MonoBehaviour
 
     private List<PeriodicEffect> effects = new List<PeriodicEffect>();
 
-    public Character Target { get; set; }
+    // To store added effects during a frame to avoid modifying the effects list being in the Update() loop
+    private Queue<PeriodicEffect> incomingEffects = new Queue<PeriodicEffect>();
 
-    public bool IsInGlobalCooldown()
-    {
-        return globalCooldown > 0;
-    }
+    public Character Target { get; set; }
 
     public int CurrentResource { get; set; }
     public int CurrentHealth { get; set; }
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
+    public int MaxResource { get => maxResource; set => maxResource = value; }
+
 
     public static Action<int, Vector3> OnDamageTaken;
-    public Action<Character, float> OnDeath;
-    public Action<int, int> OnHealthUpdated;
+    public Action<Character> OnDeath;
+    public Action<int, int> OnHealthUpdated, OnResourceUpdated;
+    public Action<float> OnGlobalCooldown;
 
     private void Awake()
     {
@@ -47,20 +46,32 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        float deltaTime = Time.deltaTime;
-
-        if (IsInGlobalCooldown())
+        if (!IsDead())
         {
-            globalCooldown -= deltaTime;
-        }
+            float deltaTime = Time.deltaTime;
 
-        foreach (PeriodicEffect effect in effects)
-        {
-            Debug.Log(effect.Duration);
-            effect.UpdateTimer(deltaTime, this);
-        }
+            if (IsInGlobalCooldown())
+            {
+                globalCooldown -= deltaTime;
+                if (OnGlobalCooldown != null)
+                    OnGlobalCooldown(globalCooldown);
+            }
 
-        effects.RemoveAll(effect => effect.Duration <= 0);
+            while (incomingEffects.Count > 0)
+            {
+                effects.Add(incomingEffects.Dequeue());
+            }
+
+            foreach (PeriodicEffect effect in effects)
+            {
+                effect.UpdateTimerAndTick(deltaTime, this);
+                // in case last effect processed killed the character, get out of the loop to avoid unnecessary work and errors
+                if (IsDead())
+                    break;
+            }
+
+            effects.RemoveAll(effect => effect.Duration <= 0);
+        }
     }
 
     public void InitStats(int health, int resource)
@@ -69,20 +80,24 @@ public class Character : MonoBehaviour
         CurrentResource = maxResource = resource;
     }
 
-    public void GetHit(int damage)
+    public bool IsInGlobalCooldown()
     {
-        TakeDamage(damage);
+        return globalCooldown > 0;
+    }
+
+    public void GetHit()
+    {
         PlayHurtAnimation();
     }
 
     public void TakeDamage(int amount)
     {
         CurrentHealth -= amount;
-        if (CurrentHealth < 0)
+        if (IsDead())
         {
             CurrentHealth = 0;
+            effects.Clear();
             animator.SetBool("Dead", true);
-            OnDeath(this, animator.GetCurrentAnimatorStateInfo(0).length + Character.DeathDelay);
         }
         OnDamageTaken(amount, transform.position);
         OnHealthUpdated(CurrentHealth, maxHealth);
@@ -91,13 +106,19 @@ public class Character : MonoBehaviour
     public void TriggerGlobalCooldown()
     {
         globalCooldown = GlobalCooldownDuration;
+        if (OnGlobalCooldown != null)
+            OnGlobalCooldown(GlobalCooldownDuration);
     }
 
     public void SpendResource(int amount)
     {
-        if (CurrentResource > amount)
+        if (CurrentResource >= amount)
         {
             CurrentResource -= amount;
+            if (OnResourceUpdated != null)
+            {
+                OnResourceUpdated(CurrentResource, maxResource);
+            }
         }
     }
 
@@ -108,13 +129,19 @@ public class Character : MonoBehaviour
 
     public void AddStatusEffect(PeriodicEffect statusEffect)
     {
-        effects.Add(statusEffect);
+        incomingEffects.Enqueue(statusEffect);
     }
 
-    public void PlayAttackAnimation()
+    public void ChangeAnimationState(String stateName)
     {
-        animator.SetTrigger("Attack");
+        animator.Play(stateName);
     }
+
+    public void Die()
+    {
+        OnDeath(this);
+    }
+
 
     private void PlayHurtAnimation()
     {

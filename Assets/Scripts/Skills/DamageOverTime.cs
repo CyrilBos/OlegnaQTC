@@ -2,7 +2,7 @@ public class DamageOverTime : PeriodicEffect
 {
     private int damagePerProc;
 
-    public DamageOverTime(float procFrequency, float duration, int damagePerProc) : base(procFrequency, duration)
+    public DamageOverTime(float tickFrequency, float duration, int damagePerProc) : base(tickFrequency, duration)
     {
         this.damagePerProc = damagePerProc;
     }
