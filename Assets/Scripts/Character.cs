@@ -8,6 +8,9 @@ public class Character : MonoBehaviour
     private float globalCooldown = 0f;
     public static float GlobalCooldownDuration = 1f;
 
+    private float remainingDodgeDuration = 0f;
+    private readonly static float DodgeTotalDuration = 1f;
+
     [SerializeField]
     private int maxHealth = 100, maxResource = 50;
 
@@ -25,12 +28,14 @@ public class Character : MonoBehaviour
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public int MaxResource { get => maxResource; set => maxResource = value; }
 
-
     public static Action<int, Vector3> OnDamageTaken;
     public Action OnHit;
+    public EventHandler StoppedDodging;
     public Action<Character> OnDeath;
     public Action<int, int> OnHealthUpdated, OnResourceUpdated;
     public Action<float> OnGlobalCooldown;
+    private static readonly int Hurt = Animator.StringToHash("Hurt");
+    private static readonly int Dead = Animator.StringToHash("Dead");
 
     private void Awake()
     {
@@ -54,8 +59,17 @@ public class Character : MonoBehaviour
             if (IsInGlobalCooldown())
             {
                 globalCooldown -= deltaTime;
-                if (OnGlobalCooldown != null)
-                    OnGlobalCooldown(globalCooldown);
+                OnGlobalCooldown?.Invoke(globalCooldown);
+            }
+
+            if (IsDodging())
+            {
+                remainingDodgeDuration -= deltaTime;
+                if (remainingDodgeDuration <= 0f)
+                {
+                    remainingDodgeDuration = 0f;
+                    StoppedDodging(this, EventArgs.Empty);
+                }
             }
 
             while (incomingEffects.Count > 0)
@@ -97,19 +111,34 @@ public class Character : MonoBehaviour
         CurrentHealth -= amount;
         if (IsDead())
         {
-            CurrentHealth = 0;
-            effects.Clear();
-            animator.SetBool("Dead", true);
+            Die();
         }
         OnDamageTaken(amount, transform.position);
         OnHealthUpdated(CurrentHealth, maxHealth);
+    }
+    
+    public void Dodge(object sender, EventArgs e)
+    {
+        if (remainingDodgeDuration <= 0f)
+        {
+            remainingDodgeDuration = DodgeTotalDuration;
+        }
+    }
+
+    public bool IsDodging()
+    {
+        return remainingDodgeDuration > 0f;
+    }
+
+    public bool DodgesSkill(CooldownSkill skill)
+    {
+        return IsDodging();
     }
 
     public void TriggerGlobalCooldown()
     {
         globalCooldown = GlobalCooldownDuration;
-        if (OnGlobalCooldown != null)
-            OnGlobalCooldown(GlobalCooldownDuration);
+        OnGlobalCooldown?.Invoke(GlobalCooldownDuration);
     }
 
     public void SpendResource(int amount)
@@ -117,16 +146,21 @@ public class Character : MonoBehaviour
         if (CurrentResource >= amount)
         {
             CurrentResource -= amount;
-            if (OnResourceUpdated != null)
-            {
-                OnResourceUpdated(CurrentResource, maxResource);
-            }
+            OnResourceUpdated?.Invoke(CurrentResource, maxResource);
         }
     }
 
     public bool IsDead()
     {
         return CurrentHealth <= 0;
+    }
+
+    private void Die()
+    {
+        CurrentHealth = 0;
+        effects.Clear();
+        animator.SetBool(Dead, true);
+        OnDeath(this);
     }
 
     public void AddStatusEffect(PeriodicEffect statusEffect)
@@ -139,14 +173,8 @@ public class Character : MonoBehaviour
         animator.Play(stateName);
     }
 
-    public void Die()
-    {
-        OnDeath(this);
-    }
-
-
     private void PlayHurtAnimation()
     {
-        animator.SetTrigger("Hurt");
+        animator.SetTrigger(Hurt);
     }
 }

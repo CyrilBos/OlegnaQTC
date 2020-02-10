@@ -12,13 +12,13 @@ public enum EnemyState
 
 public class Enemy : MonoBehaviour
 {
-    public Character Character { get; set; }
+    public Character Character { get; private set; }
 
-    private EnemyState state = EnemyState.WAITING;
+    private EnemyState _state = EnemyState.WAITING;
 
-    private CooldownSkill[] attacks;
+    private CooldownSkill[] _attacks;
 
-    private Vector2 targetPosition;
+    private Vector2 _targetPosition;
 
     private static float MovingSpeed = 0.1f;
     private static float MoveToFightPositionDelta = 0.001f;
@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         Character = GetComponent<Character>();
-        attacks = GetComponents<CooldownSkill>();
+        _attacks = GetComponents<CooldownSkill>();
         Character.Target = GameObject.Find("Player").GetComponent<Character>();
         Character.OnDeath += RemoveBody;
     }
@@ -41,17 +41,17 @@ public class Enemy : MonoBehaviour
         if (Player.IsDead() || Character.IsDead())
             return;
 
-        if (state == EnemyState.MOVING)
+        if (_state == EnemyState.MOVING)
         {
-            if (Vector2.Distance(transform.position, targetPosition) < Enemy.MoveToFightPositionDelta)
+            if (Vector2.Distance(transform.position, _targetPosition) < Enemy.MoveToFightPositionDelta)
             {
                 StartFighting();
             }
             else
             {
-                transform.position = Vector2.MoveTowards(transform.position, targetPosition, Enemy.MovingSpeed);
+                transform.position = Vector2.MoveTowards(transform.position, _targetPosition, Enemy.MovingSpeed);
             }
-        } else if (state == EnemyState.FIGHTING && !Character.IsInGlobalCooldown()) { 
+        } else if (_state == EnemyState.FIGHTING && !Character.IsInGlobalCooldown()) { 
             CooldownSkill skillToUse = ChooseSkill();
             if (skillToUse != null)
             {
@@ -62,18 +62,18 @@ public class Enemy : MonoBehaviour
 
     public void StartFighting()
     {
-        state = EnemyState.FIGHTING;
+        _state = EnemyState.FIGHTING;
     }
 
     public void GoInFight(Vector2 position)
     {
-         targetPosition = position;
-        state = EnemyState.MOVING;
+         _targetPosition = position;
+        _state = EnemyState.MOVING;
     }
 
     private CooldownSkill ChooseSkill()
     {
-        foreach (CooldownSkill attack in attacks)
+        foreach (CooldownSkill attack in _attacks)
         {
             if (attack.IsUsable())
             {

@@ -50,6 +50,7 @@
           <e p="TextInstantiator.cs" t="Include" />
           <e p="UI" t="Include">
             <e p="CooldownUI.cs" t="Include" />
+            <e p="DraggableObject.cs" t="Include" />
             <e p="HealthBar.cs" t="Include" />
             <e p="ResourceBar.cs" t="Include" />
           </e>
