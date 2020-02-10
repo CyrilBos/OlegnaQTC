@@ -27,6 +27,7 @@ public class Character : MonoBehaviour
 
 
     public static Action<int, Vector3> OnDamageTaken;
+    public Action OnHit;
     public Action<Character> OnDeath;
     public Action<int, int> OnHealthUpdated, OnResourceUpdated;
     public Action<float> OnGlobalCooldown;
@@ -88,6 +89,7 @@ public class Character : MonoBehaviour
     public void GetHit()
     {
         PlayHurtAnimation();
+        OnHit();
     }
 
     public void TakeDamage(int amount)

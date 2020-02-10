@@ -8,11 +8,14 @@ public class HealthBar : MonoBehaviour
 
     [SerializeField]
     private Character character;
-    Text healthText;
+
+    private Text healthText;
+    private RectTransform barRect;
 
     private void Awake()
     {
         healthText = GetComponentInChildren<Text>();
+        barRect = transform.Find("barImage").GetComponent<RectTransform>();
         // for player that is assigned in editor
         if (character != null)
         {
@@ -21,9 +24,15 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    public void SetCharacter(Character character)
+    private void OnDisable()
     {
-        this.character = character;
+        character.OnHealthUpdated -= UpdateHealth;
+        character.OnDeath -= DestroyHealthBar;
+    }
+
+    public void SetCharacter(Character barCharacter)
+    {
+        character = barCharacter;
         UpdateHealth(character.CurrentHealth, character.MaxHealth);
         character.OnHealthUpdated += UpdateHealth;
         character.OnDeath += DestroyHealthBar;
@@ -32,6 +41,7 @@ public class HealthBar : MonoBehaviour
     private void UpdateHealth(int currentHealth, int maxHealth)
     {
         healthText.text = $"{currentHealth}/{maxHealth}";
+        barRect.localScale = new Vector3((float) currentHealth / maxHealth, 1, 1);
     }
 
     private void DestroyHealthBar(Character _)
