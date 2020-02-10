@@ -49,13 +49,18 @@ public class CooldownSkill : MonoBehaviour
 
     public bool IsUsable()
     {
-        return currentCooldown <= 0 && user.CurrentResource >= resourceCost && !user.IsDead() && !user.Target.IsDead() && !user.IsInGlobalCooldown();
+        return currentCooldown <= 0 && user.CurrentResource >= resourceCost && !user.IsDead() && !user.Target.IsDead() && !user.IsInGlobalCooldown() && !user.IsDodging();
     }
 
     public void UseSkill()
     {
         if (IsUsable())
         {
+            if (user.Target.DodgesSkill(this))
+            {
+                return;
+            }
+            
             foreach (SkillEffect effect in effects)
             {
                 effect.ApplyEffect(user.Target);

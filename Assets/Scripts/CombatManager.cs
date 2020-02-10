@@ -5,43 +5,51 @@ using UnityEngine;
 public class CombatManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject enemyPrefab, healthBarPrefab;
+    GameObject enemyPrefab, // TODO: replace with lists of enemies using ScriptableObjects or multiple prefabs 
+        healthBarPrefab;
 
-    private Camera mainCamera;
+    private GameManager _gameManager;
 
-    private Canvas canvas;
+    private Camera _mainCamera;
 
-    private Player player;
+    private Canvas _canvas;
 
-    private List<Character> rightEnemies = new List<Character>(), leftEnemies = new List<Character>();
-    private Queue<Character> incomingRightEnemies = new Queue<Character>(), incomingLeftEnemies = new Queue<Character>();
+    private Player _player;
 
-    private static Vector2 FightingLeftEnemyPosition = new Vector2(5, 0), FightingRightEnemyPosition = new Vector2(-5, 0);
-    private static Vector2 IncomingLeftEnemyPosition = new Vector2(8, 0), IncomingRightEnemyPosition = new Vector2(-8, 0);
+    [SerializeField]
+    private readonly List<Character> _rightEnemies = new List<Character>();
+    private readonly List<Character> _leftEnemies = new List<Character>();
+    private readonly Queue<Character> _incomingRightEnemies = new Queue<Character>();
+    private readonly Queue<Character> _incomingLeftEnemies = new Queue<Character>();
+
+    private static readonly Vector2 FightingLeftEnemyPosition = new Vector2(5, 0);
+    private static readonly Vector2 FightingRightEnemyPosition = new Vector2(-5, 0);
+    private static readonly Vector2 IncomingLeftEnemyPosition = new Vector2(8, 0);
+    private static readonly Vector2 IncomingRightEnemyPosition = new Vector2(-8, 0);
 
     private void Awake()
     {
-        mainCamera = Camera.main;
-        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        player = GameObject.Find("Player").GetComponent<Player>();
+        _mainCamera = Camera.main;
+        _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        _player = GameObject.Find("Player").GetComponent<Player>();
 
-        rightEnemies.Add(InstantiateEnemy(FightingLeftEnemyPosition, Quaternion.identity, true));
-        leftEnemies.Add(InstantiateEnemy(FightingRightEnemyPosition, Quaternion.Euler(0, 180, 0), true));
+        _rightEnemies.Add(InstantiateEnemy(FightingLeftEnemyPosition, Quaternion.identity, true));
+        _leftEnemies.Add(InstantiateEnemy(FightingRightEnemyPosition, Quaternion.Euler(0, 180, 0), true));
 
-        incomingRightEnemies.Enqueue(InstantiateEnemy(IncomingLeftEnemyPosition, Quaternion.identity));
-        incomingLeftEnemies.Enqueue(InstantiateEnemy(IncomingRightEnemyPosition, Quaternion.Euler(0, 180, 0)));
+        _incomingRightEnemies.Enqueue(InstantiateEnemy(IncomingLeftEnemyPosition, Quaternion.identity));
+        _incomingLeftEnemies.Enqueue(InstantiateEnemy(IncomingRightEnemyPosition, Quaternion.Euler(0, 180, 0)));
     }
 
     private void Start()
     {
-        AssignNewTarget(rightEnemies, false);
+        AssignNewTarget(_rightEnemies, false);
     }
 
     private Character InstantiateEnemy(Vector2 position, Quaternion rotation, bool isFighting = false)
     {
-        GameObject enemyGO = Instantiate(enemyPrefab, position, rotation);
+        GameObject enemyGo = Instantiate(enemyPrefab, position, rotation);
 
-        Enemy enemy = enemyGO.GetComponent<Enemy>();
+        Enemy enemy = enemyGo.GetComponent<Enemy>();
         
 
         enemy.Character.InitStats(100, 50);
@@ -58,26 +66,27 @@ public class CombatManager : MonoBehaviour
         return enemy.Character;
     }
 
-    // On Enemy Death 
+    // Called on enemy death 
     private void RemoveDeadEnemyAndPushNewEnemyAndAssignNewTarget(Character enemy)
     {
         enemy.OnDeath -= RemoveDeadEnemyAndPushNewEnemyAndAssignNewTarget;
-        if (rightEnemies.Contains(enemy))
+        if (_rightEnemies.Contains(enemy))
         {
-            rightEnemies.Remove(enemy);
-            PushIncomingEnemy(incomingRightEnemies, rightEnemies, FightingLeftEnemyPosition);
-            AssignNewTarget(rightEnemies, false);
+            _rightEnemies.Remove(enemy);
+            PushIncomingEnemy(_incomingRightEnemies, _rightEnemies, FightingLeftEnemyPosition);
+            AssignNewTarget(_rightEnemies, false);
         }
-        else if (leftEnemies.Contains(enemy))
+        else if (_leftEnemies.Contains(enemy))
         {
-            leftEnemies.Remove(enemy);
-            PushIncomingEnemy(incomingLeftEnemies, leftEnemies, FightingRightEnemyPosition);
-            AssignNewTarget(leftEnemies, true);
+            _leftEnemies.Remove(enemy);
+            PushIncomingEnemy(_incomingLeftEnemies, _leftEnemies, FightingRightEnemyPosition);
+            AssignNewTarget(_leftEnemies, true);
         }
 
-        if (rightEnemies.Count < 1 && leftEnemies.Count < 1 && incomingLeftEnemies.Count < 1 && incomingRightEnemies.Count < 1)
+        if (_rightEnemies.Count < 1 && _leftEnemies.Count < 1 && _incomingLeftEnemies.Count < 1 && _incomingRightEnemies.Count < 1)
         {
-            Debug.Log("Win!"); // TODO
+            Debug.Log("Win!");
+            _gameManager.LoadLevel("CombatOver");
         }
     }
 
@@ -99,8 +108,8 @@ public class CombatManager : MonoBehaviour
     private void InstantiateAndAssignHealthBar(Vector2 position, Enemy enemy)
     {
         GameObject healthBar = Instantiate(healthBarPrefab);
-        healthBar.transform.SetParent(canvas.transform, false);
-        Vector2 screenPosition = mainCamera.WorldToScreenPoint(position);
+        healthBar.transform.SetParent(_canvas.transform, false);
+        Vector2 screenPosition = _mainCamera.WorldToScreenPoint(position);
         screenPosition.y += 100;
         healthBar.transform.position = screenPosition;
 
@@ -112,13 +121,13 @@ public class CombatManager : MonoBehaviour
     {
         if (SetNewTargetIfEnemiesRemain(enemies, isLeft))
         {
-            if (enemies == leftEnemies)
+            if (enemies == _leftEnemies)
             {
-                SetNewTargetIfEnemiesRemain(rightEnemies, false);
+                SetNewTargetIfEnemiesRemain(_rightEnemies, false);
             }
             else
             {
-                SetNewTargetIfEnemiesRemain(leftEnemies, true);
+                SetNewTargetIfEnemiesRemain(_leftEnemies, true);
             }
         }
     }
@@ -128,7 +137,7 @@ public class CombatManager : MonoBehaviour
     {
         if (enemies.Count > 0)
         {
-            player.ChangeTarget(enemies[0], isLeft);
+            _player.ChangeTarget(enemies[0], isLeft);
             return false;
         }
 
