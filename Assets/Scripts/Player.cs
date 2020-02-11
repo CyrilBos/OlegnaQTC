@@ -18,22 +18,15 @@ public class Player : MonoBehaviour
         s_character.StoppedDodging += draggable.ResetPosition;
     }
 
-    public static Character Target
-    {
-        set
-        {
-            if (s_target != value)
-            {
-                s_target = value;
-                s_character.Target = s_target;
-            }
-        }
-    }
-
     public void ChangeTarget(Character newTarget, bool isLeft)
     {
-        Target = newTarget;
-        this.transform.eulerAngles = isLeft ? new Vector3(0, 180, 0) : new Vector3(0, 0, 0);
+        if (s_target == newTarget) return;
+        if (newTarget == s_character) return;
+        
+        s_target = newTarget;
+        s_character.Target = s_target;
+        
+        transform.eulerAngles = isLeft ? new Vector3(0, 180, 0) : new Vector3(0, 0, 0);
     }
 
     public static bool IsDead()

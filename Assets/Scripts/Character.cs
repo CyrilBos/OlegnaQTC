@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Skills;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -47,7 +48,7 @@ public class Character : MonoBehaviour
 
     private void OnMouseUp()
     {
-        Player.Target = this;
+        CombatManager.Player.ChangeTarget(this, CombatManager.Instance.isEnemyOnLeftSide(this));
     }
 
     private void Update()
@@ -103,7 +104,7 @@ public class Character : MonoBehaviour
     public void GetHit()
     {
         PlayHurtAnimation();
-        OnHit();
+        OnHit?.Invoke();
     }
 
     public void TakeDamage(int amount)
@@ -113,8 +114,8 @@ public class Character : MonoBehaviour
         {
             Die();
         }
-        OnDamageTaken(amount, transform.position);
-        OnHealthUpdated(CurrentHealth, maxHealth);
+        OnDamageTaken?.Invoke(amount, transform.position);
+        OnHealthUpdated?.Invoke(CurrentHealth, maxHealth);
     }
     
     public void Dodge(object sender, EventArgs e)

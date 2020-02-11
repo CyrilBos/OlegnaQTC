@@ -1,63 +1,80 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CooldownSkill : MonoBehaviour
+namespace Skills
 {
-    [SerializeField]
-    private new String name;
-
-    [SerializeField]
-    private float cooldown = 1;
-
-    [SerializeField]
-    private int resourceCost;
-
-    [SerializeField]
-    private SkillEffect[] effects;
-
-    [SerializeField]
-    private Character user;
-
-    [SerializeField]
-    private String animationStateName; 
-
-    private float currentCooldown = 0f;
-
-    public string Name { get => name; }
-    public float Cooldown { get => cooldown; }
-    public float CurrentCooldown { get => currentCooldown; }
-
-    public Action<float> OnCooldownUpdate;
-
-    private void Awake()
+    public class SkillMissedEventArgs : EventArgs
     {
+        public Vector3 Position { get; }
 
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
-        if (currentCooldown > 0)
+        public SkillMissedEventArgs(Vector3 position)
         {
-            currentCooldown -= Time.deltaTime;
-            if (OnCooldownUpdate != null)
-                OnCooldownUpdate(currentCooldown);
+            Position = position;
         }
     }
-
-    public bool IsUsable()
+    
+    public class CooldownSkill : MonoBehaviour
     {
-        return currentCooldown <= 0 && user.CurrentResource >= resourceCost && !user.IsDead() && !user.Target.IsDead() && !user.IsInGlobalCooldown() && !user.IsDodging();
-    }
+        [SerializeField]
+        private new String name;
 
-    public void UseSkill()
-    {
-        if (IsUsable())
+        [SerializeField]
+        private float cooldown = 1;
+
+        [SerializeField]
+        private int resourceCost;
+
+        [SerializeField]
+        private SkillEffect[] effects;
+
+        [SerializeField]
+        private Character user;
+
+        [SerializeField]
+        private String animationStateName; 
+
+        private float currentCooldown = 0f;
+
+        public string Name { get => name; }
+        public float Cooldown { get => cooldown; }
+        public float CurrentCooldown { get => currentCooldown; }
+
+        public Action<float> OnCooldownUpdate;
+        public static EventHandler<SkillMissedEventArgs> TargetDodged;
+
+        private void Awake()
         {
+
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            if (currentCooldown > 0)
+            {
+                currentCooldown -= Time.deltaTime;
+                if (OnCooldownUpdate != null)
+                    OnCooldownUpdate(currentCooldown);
+            }
+        }
+
+        public bool IsUsable()
+        {
+            return currentCooldown <= 0 && user.CurrentResource >= resourceCost && !user.IsDead() && !user.Target.IsDead() && !user.IsInGlobalCooldown() && !user.IsDodging();
+        }
+
+        public void UseSkill()
+        {
+            if (!IsUsable()) return;
+        
+            user.SpendResource(resourceCost);
+            user.ChangeAnimationState(animationStateName);
+            user.TriggerGlobalCooldown();
+            currentCooldown = cooldown;
+            
             if (user.Target.DodgesSkill(this))
             {
+                TargetDodged(this, new SkillMissedEventArgs(user.Target.gameObject.transform.position));
                 return;
             }
             
@@ -65,11 +82,7 @@ public class CooldownSkill : MonoBehaviour
             {
                 effect.ApplyEffect(user.Target);
             }
-            user.SpendResource(resourceCost);
-            user.TriggerGlobalCooldown();
-            user.ChangeAnimationState(animationStateName);
-            currentCooldown = cooldown;
-
+            
             // triggers hurt animation
             user.Target.GetHit();
         }

@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f903f1982942d094d53d84bd60dcf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragEventDistance: 1
+  dragMaxDistance: 1
 --- !u!1001 &4225769058150341812
 PrefabInstance:
   m_ObjectHideFlags: 0

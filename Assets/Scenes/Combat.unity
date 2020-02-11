@@ -645,7 +645,6 @@ GameObject:
   - component: {fileID: 1206497854}
   - component: {fileID: 1206497853}
   - component: {fileID: 1206497852}
-  - component: {fileID: 1206497856}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -738,20 +737,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1206497856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1206497851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 091f48268cb8a490b9cb10996b6a4238, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageTextPrefab: {fileID: 2248970062831353369, guid: 2ec9311bd51014ad68ec5567fbdd07a0,
-    type: 3}
 --- !u!1 &1319491710
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,6 +747,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1319491712}
   - component: {fileID: 1319491711}
+  - component: {fileID: 1319491713}
   m_Layer: 0
   m_Name: CombatManager
   m_TagString: Untagged
@@ -799,6 +785,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1319491713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319491710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091f48268cb8a490b9cb10996b6a4238, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageTextPrefab: {fileID: 2248970062831353369, guid: 2ec9311bd51014ad68ec5567fbdd07a0,
+    type: 3}
+  skillMissedPrefab: {fileID: 1108352963873554605, guid: 9476eed3f4414cd4b8e3ba4fd5e868c1,
+    type: 3}
 --- !u!1 &1427506508 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5753309252318086638, guid: b557c1cdf80c8834c906bbbfdab5f34e,

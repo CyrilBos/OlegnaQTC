@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombatManager : MonoBehaviour
+public class CombatManager : Singleton<CombatManager>
 {
     [SerializeField]
     GameObject enemyPrefab, // TODO: replace with lists of enemies using ScriptableObjects or multiple prefabs 
@@ -14,7 +14,12 @@ public class CombatManager : MonoBehaviour
 
     private Canvas _canvas;
 
-    private Player _player;
+    private static Player s_player;
+    
+    public static Player Player
+    {
+        get { return s_player; }
+    }
 
     [SerializeField]
     private readonly List<Character> _rightEnemies = new List<Character>();
@@ -29,9 +34,10 @@ public class CombatManager : MonoBehaviour
 
     private void Awake()
     {
+        base.Awake();
         _mainCamera = Camera.main;
         _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        _player = GameObject.Find("Player").GetComponent<Player>();
+        s_player = GameObject.Find("Player").GetComponent<Player>();
 
         _rightEnemies.Add(InstantiateEnemy(FightingLeftEnemyPosition, Quaternion.identity, true));
         _leftEnemies.Add(InstantiateEnemy(FightingRightEnemyPosition, Quaternion.Euler(0, 180, 0), true));
@@ -137,10 +143,15 @@ public class CombatManager : MonoBehaviour
     {
         if (enemies.Count > 0)
         {
-            _player.ChangeTarget(enemies[0], isLeft);
+            s_player.ChangeTarget(enemies[0], isLeft);
             return false;
         }
 
         return true;
+    }
+
+    public bool isEnemyOnLeftSide(Character character)
+    {
+        return _leftEnemies.Contains(character);
     }
 }

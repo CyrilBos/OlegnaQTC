@@ -7,7 +7,7 @@ namespace UI
 {
     public class DraggableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [SerializeField] private float dragEventDistance;
+        [SerializeField] private float dragMaxDistance;
 
         private Vector3 _startingPosition;
         private Camera _mainCamera;
@@ -32,6 +32,14 @@ namespace UI
                 _mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,
                     zDistanceToCamera));
             newPosition.x = _startingPosition.x;
+            if (newPosition.y > _startingPosition.y)
+            {
+                newPosition.y = Math.Min(newPosition.y, _startingPosition.y + dragMaxDistance);
+            }
+            else
+            {
+                newPosition.y = Math.Max(newPosition.y, _startingPosition.y - dragMaxDistance);
+            }
 
             transform.position = newPosition;
         }
@@ -46,10 +54,15 @@ namespace UI
             var offset = _startingPosition - draggedPosition;
             
             Debug.Log(offset.magnitude);
-            if (!(offset.magnitude >= dragEventDistance)) return;
+            if (offset.magnitude >= dragMaxDistance)
+            {
+                draggedAway(this, EventArgs.Empty);
+            }
+            else
+            {
+                transform.position = _startingPosition;
+            }
             
-            Debug.Log("dragged away");
-            draggedAway(this, EventArgs.Empty);
         }
 
         public void ResetPosition(object sender, EventArgs eventArgs)
