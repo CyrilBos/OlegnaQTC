@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Skills;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    [SerializeField]
+    private int maxHealth = 100, maxResource = 50;
+    
     private float globalCooldown = 0f;
     public static float GlobalCooldownDuration = 1f;
 
     private float remainingDodgeDuration = 0f;
     private readonly static float DodgeTotalDuration = 1f;
-
-    [SerializeField]
-    private int maxHealth = 100, maxResource = 50;
+    
+    private CooldownSkill[] _attacks;
 
     private Animator animator;
 
@@ -23,11 +25,18 @@ public class Character : MonoBehaviour
     private Queue<PeriodicEffect> incomingEffects = new Queue<PeriodicEffect>();
 
     public Character Target { get; set; }
+    
 
     public int CurrentResource { get; set; }
     public int CurrentHealth { get; set; }
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public int MaxResource { get => maxResource; set => maxResource = value; }
+    
+    public CooldownSkill[] Attacks
+    {
+        get { return _attacks; }
+    }
+
 
     public static Action<int, Vector3> OnDamageTaken;
     public Action OnHit;
@@ -41,6 +50,7 @@ public class Character : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        _attacks = GetComponents<CooldownSkill>();
 
         CurrentHealth = maxHealth;
         CurrentResource = maxResource;
@@ -134,6 +144,17 @@ public class Character : MonoBehaviour
     public bool DodgesSkill(CooldownSkill skill)
     {
         return IsDodging();
+    }
+    
+    public void UseSkill(String skillName)
+    {
+        GetSkillByName(skillName).Use();
+    }
+    
+    public CooldownSkill GetSkillByName(string skillName)
+    {
+        // TODO replace by a Map<String, Skill> ?
+        return Attacks.FirstOrDefault(skill => skill.Name == skillName);
     }
 
     public void TriggerGlobalCooldown()

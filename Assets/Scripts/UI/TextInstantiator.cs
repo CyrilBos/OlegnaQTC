@@ -1,5 +1,4 @@
-﻿using System;
-using Skills;
+﻿using Skills;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;

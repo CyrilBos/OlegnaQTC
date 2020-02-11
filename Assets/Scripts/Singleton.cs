@@ -1,35 +1,32 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 {
-    private static T s_instance;
-    public static T Instance { get; }
-    
+    public static T Instance { get; private set; }
+
     public static bool IsInitialized
     {
-        get { return s_instance != null; }
+        get { return Instance != null; }
     }
 
     protected void Awake()
     {
-        if (s_instance != null)
+        if (Instance != null)
         {
             Debug.LogError("Trying to instantiate a second instance of a Singleton class");
         }
         else
         {
-            s_instance = (T) this;
+            Instance = (T) this;
         }
     }
     
     protected void OnDestroy()
     {
-        if (s_instance == this)
+        if (Instance == this)
         {
-            s_instance = null;
+            Instance = null;
         }
     }
 }

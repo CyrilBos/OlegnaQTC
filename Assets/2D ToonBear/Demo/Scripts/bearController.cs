@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
 
 //This Script is intended for demoing and testing animations only.
 

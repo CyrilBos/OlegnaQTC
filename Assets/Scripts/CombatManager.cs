@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatManager : Singleton<CombatManager>
@@ -7,9 +6,7 @@ public class CombatManager : Singleton<CombatManager>
     [SerializeField]
     GameObject enemyPrefab, // TODO: replace with lists of enemies using ScriptableObjects or multiple prefabs 
         healthBarPrefab;
-
-    private GameManager _gameManager;
-
+    
     private Camera _mainCamera;
 
     [SerializeField]
@@ -93,7 +90,7 @@ public class CombatManager : Singleton<CombatManager>
         if (_rightEnemies.Count < 1 && _leftEnemies.Count < 1 && _incomingLeftEnemies.Count < 1 && _incomingRightEnemies.Count < 1)
         {
             Debug.Log("Win!");
-            _gameManager.LoadLevel("CombatOver");
+            GameManager.Instance.LoadLevel("CombatOver");
         }
     }
 

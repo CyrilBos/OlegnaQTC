@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51d8c1baf943427483962673ad89d02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: 
+  name: HeavyBanditAttack
   cooldown: 1
   resourceCost: 0
   effects:

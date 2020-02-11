@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Skills;
+﻿using Skills;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +23,7 @@ public class CooldownUI : MonoBehaviour
         skill = CombatManager.Player.GetSkillByName(skillName);
         player.OnGlobalCooldown += HandleGlobalCooldown;
         
-        // TODO: button.onClick.AddListener(skill.UseSkill);
+        button.onClick.AddListener(skill.Use);
 
         
         // Set the skill button with the skill name

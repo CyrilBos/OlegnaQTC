@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Linq;
 using Skills;
 using UnityEngine;
 
@@ -16,9 +14,7 @@ public class Enemy : MonoBehaviour
     public Character Character { get; private set; }
 
     private EnemyState _state = EnemyState.Waiting;
-
-    private CooldownSkill[] _attacks;
-
+    
     private Vector2 _targetPosition;
 
     private static float MovingSpeed = 0.1f;
@@ -27,7 +23,6 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         Character = GetComponent<Character>();
-        _attacks = GetComponents<CooldownSkill>();
         Character.Target = GameObject.Find("Player").GetComponent<Character>();
         Character.OnDeath += RemoveBody;
     }
@@ -42,21 +37,23 @@ public class Enemy : MonoBehaviour
         if (Player.IsDead() || Character.IsDead())
             return;
 
-        if (_state == EnemyState.Moving)
+        switch (_state)
         {
-            if (Vector2.Distance(transform.position, _targetPosition) < Enemy.MoveToFightPositionDelta)
-            {
+            case EnemyState.Moving when Vector2.Distance(transform.position, _targetPosition) < Enemy.MoveToFightPositionDelta:
                 StartFighting();
-            }
-            else
-            {
+                break;
+            case EnemyState.Moving:
                 transform.position = Vector2.MoveTowards(transform.position, _targetPosition, Enemy.MovingSpeed);
-            }
-        } else if (_state == EnemyState.Fighting && !Character.IsInGlobalCooldown()) { 
-            CooldownSkill skillToUse = ChooseSkill();
-            if (skillToUse != null)
+                break;
+            case EnemyState.Fighting when !Character.IsInGlobalCooldown():
             {
-                skillToUse.Use();
+                var skillToUse = ChooseSkill();
+                if (skillToUse != null)
+                {
+                    skillToUse.Use();
+                }
+
+                break;
             }
         }
     }
@@ -74,14 +71,7 @@ public class Enemy : MonoBehaviour
 
     private CooldownSkill ChooseSkill()
     {
-        foreach (CooldownSkill attack in _attacks)
-        {
-            if (attack.IsUsable())
-            {
-                return attack;
-            }
-        }
-        return null;
+        return Character.Attacks.FirstOrDefault(attack => attack.IsUsable());
     }
 
     private void RemoveBody(Character _)
