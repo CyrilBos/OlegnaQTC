@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fcf0e0dd760e234d8717ffda5ecf316, type: 3}
   m_Name: Swipe
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 150
