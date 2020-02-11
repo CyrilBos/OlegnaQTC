@@ -6,16 +6,16 @@ using UnityEngine;
 
 public enum EnemyState
 {
-    FIGHTING,
-    WAITING,
-    MOVING
+    Fighting,
+    Waiting,
+    Moving
 }
 
 public class Enemy : MonoBehaviour
 {
     public Character Character { get; private set; }
 
-    private EnemyState _state = EnemyState.WAITING;
+    private EnemyState _state = EnemyState.Waiting;
 
     private CooldownSkill[] _attacks;
 
@@ -42,7 +42,7 @@ public class Enemy : MonoBehaviour
         if (Player.IsDead() || Character.IsDead())
             return;
 
-        if (_state == EnemyState.MOVING)
+        if (_state == EnemyState.Moving)
         {
             if (Vector2.Distance(transform.position, _targetPosition) < Enemy.MoveToFightPositionDelta)
             {
@@ -52,24 +52,24 @@ public class Enemy : MonoBehaviour
             {
                 transform.position = Vector2.MoveTowards(transform.position, _targetPosition, Enemy.MovingSpeed);
             }
-        } else if (_state == EnemyState.FIGHTING && !Character.IsInGlobalCooldown()) { 
+        } else if (_state == EnemyState.Fighting && !Character.IsInGlobalCooldown()) { 
             CooldownSkill skillToUse = ChooseSkill();
             if (skillToUse != null)
             {
-                skillToUse.UseSkill();
+                skillToUse.Use();
             }
         }
     }
 
     public void StartFighting()
     {
-        _state = EnemyState.FIGHTING;
+        _state = EnemyState.Fighting;
     }
 
     public void GoInFight(Vector2 position)
     {
          _targetPosition = position;
-        _state = EnemyState.MOVING;
+        _state = EnemyState.Moving;
     }
 
     private CooldownSkill ChooseSkill()

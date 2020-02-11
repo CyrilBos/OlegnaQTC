@@ -1,30 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 enum GameState
 {
-    COMBAT,
-    COMBAT_OVER
+    Combat,
+    CombatOver
 }
 
 public class GameManager : Singleton<GameManager>
 {
 
-    private GameState currentState;
+    private GameState _currentState;
 
-    private string currentLevelName = string.Empty;
+    private string _currentLevelName = string.Empty;
 
-    private List<AsyncOperation> _loadOperations = new List<AsyncOperation>();
+    private readonly List<AsyncOperation> _loadOperations = new List<AsyncOperation>();
 
-    private CombatManager combatManager;
+    private CombatManager _combatManager;
 
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
         LoadLevel("Combat");
-        SwitchState(GameState.COMBAT);
+        SwitchState(GameState.Combat);
+    }
+
+    private void OnDisable()
+    {
+        foreach (AsyncOperation ao in _loadOperations)
+        {
+            ao.completed -= RemoveLoadOperation;
+        }
+        _loadOperations.Clear(); // TODO
     }
 
     public void LoadLevel(string levelName)
@@ -38,7 +48,7 @@ public class GameManager : Singleton<GameManager>
         ao.completed += RemoveLoadOperation;
         _loadOperations.Add(ao);
 
-        currentLevelName = levelName;
+        _currentLevelName = levelName;
     }
 
     private void UnloadLevel(string levelName)
@@ -60,6 +70,6 @@ public class GameManager : Singleton<GameManager>
 
     private void SwitchState(GameState newState)
     {
-        this.currentState = newState;
+        this._currentState = newState;
     }
 }

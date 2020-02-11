@@ -32,8 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
-  m_Children:
-  - {fileID: 5341908839933520889}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -158,8 +157,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49223ac69d8a24990bc0637ed5e43bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attacks:
-  - {fileID: 3790377898122144528}
 --- !u!114 &3790377898122144528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,4 +175,4 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: b3a153e8d7340e64e938494dde9987e1, type: 2}
   user: {fileID: 1879123424052034000}
-  animationStateName: Attack
+  animationStateName: BasicAttack

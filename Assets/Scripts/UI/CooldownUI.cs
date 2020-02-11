@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class CooldownUI : MonoBehaviour
 {
+    [SerializeField] private string skillName;
+    
     private CooldownSkill skill;
 
     private Character player;
@@ -14,17 +16,18 @@ public class CooldownUI : MonoBehaviour
     private Button button;
     private Image cooldownOverlay;
 
-    private void Awake()
+    private void Start()
     {
-        skill = GetComponent<CooldownSkill>();
         button = GetComponent<Button>();
         cooldownOverlay = transform.Find("CooldownOverlay").GetComponent<Image>();
-
-        player = GameObject.Find("Player").GetComponent<Character>();
+        
+        player = CombatManager.Player.GetComponent<Character>();
+        skill = CombatManager.Player.GetSkillByName(skillName);
         player.OnGlobalCooldown += HandleGlobalCooldown;
+        
+        // TODO: button.onClick.AddListener(skill.UseSkill);
 
-        button.onClick.AddListener(skill.UseSkill);
-
+        
         // Set the skill button with the skill name
         transform.Find("ButtonText").GetComponent<Text>().text = skill.Name;
 

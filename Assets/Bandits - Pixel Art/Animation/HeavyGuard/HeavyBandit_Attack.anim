@@ -88,8 +88,8 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.4
-    functionName: UseSkill
-    data: 
+    functionName: ApplySkillEffect
+    data: HeavyBanditAttack
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

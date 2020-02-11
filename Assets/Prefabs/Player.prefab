@@ -11,7 +11,10 @@ GameObject:
   - component: {fileID: 5753309252318086627}
   - component: {fileID: 5753309252318086624}
   - component: {fileID: 5753309252318086626}
+  - component: {fileID: 2086963908062943184}
   - component: {fileID: 5753309252318086625}
+  - component: {fileID: 3150509537453411151}
+  - component: {fileID: 4078460906645133575}
   - component: {fileID: 5753309252318086629}
   - component: {fileID: 4812184777461188925}
   m_Layer: 0
@@ -29,7 +32,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5753309252318086638}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.18, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 434288447253391359}
@@ -105,6 +108,32 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!61 &2086963908062943184
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5753309252318086638}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.22315764}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.56, y: 2.56}
+    newSize: {x: 2.56, y: 2.56}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.56, y: 3.0063152}
+  m_EdgeRadius: 0
 --- !u!114 &5753309252318086625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,6 +148,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 150
   maxResource: 100
+--- !u!114 &3150509537453411151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5753309252318086638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d51d8c1baf943427483962673ad89d02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: Swipe
+  cooldown: 0
+  resourceCost: 0
+  effects:
+  - {fileID: 11400000, guid: d15c2758c2630314382d63439322bd3d, type: 2}
+  user: {fileID: 5753309252318086625}
+  animationStateName: Attack
+--- !u!114 &4078460906645133575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5753309252318086638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d51d8c1baf943427483962673ad89d02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: Bite
+  cooldown: 2
+  resourceCost: 20
+  effects:
+  - {fileID: 11400000, guid: 0019ffaedc7027343b621d8b0820fac8, type: 2}
+  - {fileID: 11400000, guid: 99a2bc77a2bcbdd45a4cb35ceefb4935, type: 2}
+  user: {fileID: 5753309252318086625}
+  animationStateName: Attack
 --- !u!114 &5753309252318086629
 MonoBehaviour:
   m_ObjectHideFlags: 0

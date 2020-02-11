@@ -63,7 +63,7 @@ namespace Skills
             return currentCooldown <= 0 && user.CurrentResource >= resourceCost && !user.IsDead() && !user.Target.IsDead() && !user.IsInGlobalCooldown() && !user.IsDodging();
         }
 
-        public void UseSkill()
+        public void Use()
         {
             if (!IsUsable()) return;
         
@@ -71,6 +71,11 @@ namespace Skills
             user.ChangeAnimationState(animationStateName);
             user.TriggerGlobalCooldown();
             currentCooldown = cooldown;
+        }
+
+        public void ApplySkillEffect(String skillName)
+        {
+            if (name != skillName) return;
             
             if (user.Target.DodgesSkill(this))
             {

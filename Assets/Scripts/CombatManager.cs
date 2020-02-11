@@ -12,6 +12,7 @@ public class CombatManager : Singleton<CombatManager>
 
     private Camera _mainCamera;
 
+    [SerializeField]
     private Canvas _canvas;
 
     private static Player s_player;
@@ -32,12 +33,12 @@ public class CombatManager : Singleton<CombatManager>
     private static readonly Vector2 IncomingLeftEnemyPosition = new Vector2(8, 0);
     private static readonly Vector2 IncomingRightEnemyPosition = new Vector2(-8, 0);
 
-    private void Awake()
+    private new void Awake() // TODO: new?
     {
         base.Awake();
         _mainCamera = Camera.main;
-        _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         s_player = GameObject.Find("Player").GetComponent<Player>();
+        _canvas.gameObject.SetActive(true);
 
         _rightEnemies.Add(InstantiateEnemy(FightingLeftEnemyPosition, Quaternion.identity, true));
         _leftEnemies.Add(InstantiateEnemy(FightingRightEnemyPosition, Quaternion.Euler(0, 180, 0), true));
