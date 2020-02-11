@@ -45,10 +45,10 @@ public class Player : MonoBehaviour
     public CooldownSkill GetSkillByName(string skillName)
     {                // TODO replace by a Map<String, Skill> ?
 
-        for (int i = 0; i < _attacks.Length; i++)
+        for (var i = 0; i < _attacks.Length; i++)
         {
-            CooldownSkill skill = _attacks[i];
-            if (skill.name == skillName)
+            var skill = _attacks[i];
+            if (skill.Name == skillName)
             {
                 return skill;
             }
