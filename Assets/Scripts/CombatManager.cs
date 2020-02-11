@@ -91,6 +91,7 @@ public class CombatManager : Singleton<CombatManager>
         {
             Debug.Log("Win!");
             GameManager.Instance.LoadLevel("CombatOver");
+            GameManager.Instance.UnloadLevel("Combat");
         }
     }
 

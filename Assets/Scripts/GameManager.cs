@@ -50,7 +50,7 @@ public class GameManager : Singleton<GameManager>
         _currentLevelName = levelName;
     }
 
-    private void UnloadLevel(string levelName)
+    public void UnloadLevel(string levelName)
     {
         AsyncOperation ao = SceneManager.UnloadSceneAsync(levelName);
         if (ao == null)
