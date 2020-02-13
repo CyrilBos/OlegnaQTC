@@ -26,8 +26,7 @@ namespace Skills
 
         [SerializeField]
         private SkillEffect[] effects;
-
-        [SerializeField]
+            
         private Character user;
 
         [SerializeField]
@@ -44,7 +43,7 @@ namespace Skills
 
         private void Awake()
         {
-
+            user = GetComponent<Character>();
         }
 
         // Update is called once per frame

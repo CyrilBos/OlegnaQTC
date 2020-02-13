@@ -13,8 +13,8 @@ public class Player : MonoBehaviour
     {
         s_character = GetComponent<Character>();
         var draggable = GetComponent<DraggableObject>();
-        draggable.draggedAway += s_character.Dodge;
-        s_character.StoppedDodging += draggable.ResetPosition;
+        //draggable.draggedAway += s_character.Dodge;
+        //s_character.StoppedDodging += draggable.ResetPosition;
     }
 
     public void ChangeTarget(Character newTarget, bool isLeft)
